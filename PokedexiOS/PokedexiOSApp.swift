@@ -6,12 +6,18 @@
 //
 
 import SwiftUI
+import ComposableArchitecture
 
 @main
 struct PokedexiOSApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+//            ContentView()
+            AppView(
+              store: Store(initialState: AppFeature.State()) {
+                AppFeature()
+              }
+            )
         }
     }
 }

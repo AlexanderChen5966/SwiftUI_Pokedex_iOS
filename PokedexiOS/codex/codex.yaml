@@ -1,0 +1,33 @@
+context:
+  include:
+    - docs/spec/01-product-brief.md
+    - docs/spec/02-ui-components.md
+    - docs/spec/03-architecture-tca.md
+    - docs/spec/04-data-contracts.md
+    - docs/spec/05-filtering-rules.md
+    - docs/spec/06-acceptance-criteria.md
+    - codex/prompts/system.prompt.md
+    - codex/prompts/style.prompt.md
+    - codex/prompts/ios.prompt.md
+  exclude:
+    - "**/Pods/**"
+    - "**/.build/**"
+    - "**/DerivedData/**"
+
+write_rules:
+  allow:
+    - "Sources/**"
+    - "Package.swift"
+    - "PokedexiOS.xcodeproj/**"
+    - "Tests/**"
+  deny:
+    - "docs/**"
+    - "codex/**"
+    - "scripts/**"
+
+post_run:
+  - "bash scripts/verify.sh"
+
+generation:
+  model: "gpt-5"
+  temperature: 0.2
