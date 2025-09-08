@@ -12,7 +12,6 @@ import ComposableArchitecture
 struct PokedexiOSApp: App {
     var body: some Scene {
         WindowGroup {
-//            ContentView()
             AppView(
               store: Store(initialState: AppFeature.State()) {
                 AppFeature()
