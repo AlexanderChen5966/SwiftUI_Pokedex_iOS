@@ -45,11 +45,79 @@ public struct PokedexListView: View {
       .toolbar {
         ToolbarItem(placement: .navigationBarTrailing) {
           Menu {
+            // Image style & shiny
             Picker("Image Style", selection: viewStore.binding(get: \.imageStyle, send: PokedexListFeature.Action.setImageStyle)) {
               Text("Official").tag(PokedexListFeature.ImageStyle.official)
               Text("Sprite").tag(PokedexListFeature.ImageStyle.sprite)
             }
             Toggle("Shiny", isOn: viewStore.binding(get: \.isShiny, send: PokedexListFeature.Action.toggleShiny))
+
+            // Filters: Forms
+            Menu("Forms") {
+              Toggle(
+                "Mega",
+                isOn: Binding(
+                  get: { viewStore.formFilters.contains(.mega) },
+                  set: { viewStore.send(.toggleFormFilter(.mega, $0)) }
+                )
+              )
+              Toggle(
+                "Gmax",
+                isOn: Binding(
+                  get: { viewStore.formFilters.contains(.gmax) },
+                  set: { viewStore.send(.toggleFormFilter(.gmax, $0)) }
+                )
+              )
+              Toggle(
+                "Other Forms",
+                isOn: Binding(
+                  get: { viewStore.formFilters.contains(.otherForms) },
+                  set: { viewStore.send(.toggleFormFilter(.otherForms, $0)) }
+                )
+              )
+            }
+
+            // Filters: Capture
+            Menu("Capture") {
+              Button(action: { viewStore.send(.setCaptureFilter(.all)) }) {
+                HStack {
+                  if viewStore.captureFilter == .all { Image(systemName: "checkmark") }
+                  Text("All")
+                }
+              }
+              Button(action: { viewStore.send(.setCaptureFilter(.caught)) }) {
+                HStack {
+                  if viewStore.captureFilter == .caught { Image(systemName: "checkmark") }
+                  Text("Caught")
+                }
+              }
+              Button(action: { viewStore.send(.setCaptureFilter(.uncaught)) }) {
+                HStack {
+                  if viewStore.captureFilter == .uncaught { Image(systemName: "checkmark") }
+                  Text("Uncaught")
+                }
+              }
+            }
+
+            // Filters: Generation / Region
+            Menu("Generation/Region") {
+              Button(action: { viewStore.send(.setSelectedGeneration(nil)) }) {
+                HStack {
+                  if viewStore.selectedGeneration == nil { Image(systemName: "checkmark") }
+                  Text("All Generations")
+                }
+              }
+              if !viewStore.generations.isEmpty {
+                ForEach(viewStore.generations) { gen in
+                  Button(action: { viewStore.send(.setSelectedGeneration(gen)) }) {
+                    HStack {
+                      if viewStore.selectedGeneration == gen { Image(systemName: "checkmark") }
+                      Text("\(gen.generation) · \(gen.region)")
+                    }
+                  }
+                }
+              }
+            }
           } label: {
             Image(systemName: "line.3.horizontal.decrease.circle")
           }
