@@ -17,11 +17,21 @@ public struct PokedexListView: View {
           GridItem(.flexible(minimum: 120, maximum: 200), spacing: 12)
         ], spacing: 12) {
           ForEach(viewStore.filtered) { pokemon in
-            PokemonCardView(
-              pokemon: pokemon,
-              imageStyle: viewStore.imageStyle,
-              isShiny: viewStore.isShiny
-            )
+            NavigationLink {
+              PokemonDetailView(
+                store: Store(
+                  initialState: PokemonDetailFeature.State(pokemon: pokemon)
+                ) {
+                  PokemonDetailFeature()
+                }
+              )
+            } label: {
+              PokemonCardView(
+                pokemon: pokemon,
+                imageStyle: viewStore.imageStyle,
+                isShiny: viewStore.isShiny
+              )
+            }
           }
         }
         .padding(.horizontal)
