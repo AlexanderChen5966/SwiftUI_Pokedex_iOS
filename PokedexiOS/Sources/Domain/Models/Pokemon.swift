@@ -1,5 +1,8 @@
 import Foundation
 
+/// 單筆寶可夢資料模型。
+/// - 對應 `pokemon_data.json` 的欄位，並針對數值型欄位提供寬鬆解碼（字串或數字）。
+
 public struct Pokemon: Codable, Equatable, Identifiable {
   // Core identifiers
   public let id: Int
@@ -70,7 +73,7 @@ public struct Pokemon: Codable, Equatable, Identifiable {
     case types
   }
 
-  // Be lenient with numbers possibly encoded as strings in data sources.
+  /// 寬鬆解碼：部分資料源可能將數字以字串形式提供（例如 height/weight）。
   public init(from decoder: Decoder) throws {
     let container = try decoder.container(keyedBy: CodingKeys.self)
 
@@ -82,7 +85,7 @@ public struct Pokemon: Codable, Equatable, Identifiable {
     self.formType = try? container.decodeIfPresent(String.self, forKey: .formType)
     self.image = try? container.decodeIfPresent(String.self, forKey: .image)
 
-    // height / weight may appear as string in some datasets
+    // height / weight 可能為字串，嘗試轉成 Double
     func decodeFlexibleDouble(_ key: CodingKeys) -> Double? {
       if let d = try? container.decodeIfPresent(Double.self, forKey: key) { return d }
       if let s = try? container.decodeIfPresent(String.self, forKey: key) {
@@ -104,10 +107,10 @@ public struct Pokemon: Codable, Equatable, Identifiable {
 }
 
 public extension Pokemon {
+  /// 從 `Data` 解碼成 `[Pokemon]`
   static func decodeList(from data: Data) throws -> [Pokemon] {
     let decoder = JSONDecoder()
     decoder.keyDecodingStrategy = .useDefaultKeys
     return try decoder.decode([Pokemon].self, from: data)
   }
 }
-

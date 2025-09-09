@@ -1,0 +1,34 @@
+# macOS
+.DS_Store
+
+# Xcode
+*/build/
+DerivedData/
+xcuserdata/
+*.xcuserstate
+*.xccheckout
+*.moved-aside
+
+# Swift Package Manager
+.build/
+.swiftpm/
+Packages/
+
+# CocoaPods / Carthage (not used, but ignore if present)
+Pods/
+Carthage/Build/
+
+# Fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/**/*.png
+fastlane/test_output/
+
+# IDEs
+.idea/
+.vscode/
+
+# Env / secrets
+.env
+.env.*
+

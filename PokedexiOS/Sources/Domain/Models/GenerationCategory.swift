@@ -1,5 +1,8 @@
 import Foundation
 
+/// 世代/地區分類資料模型。
+/// - 解析 `pokemon_generations.json`，並支援將以逗號分隔的字串轉為陣列。
+
 public struct GenerationCategory: Codable, Equatable, Identifiable {
   public var id: String { "\(generation)|\(region)" }
 
@@ -37,6 +40,7 @@ public struct GenerationCategory: Codable, Equatable, Identifiable {
     self.region = (try? container.decode(String.self, forKey: .region)) ?? ""
     self.nationalDexRange = (try? container.decode(String.self, forKey: .nationalDexRange)) ?? ""
 
+    /// 嘗試以陣列解碼；若為單一字串則以逗號切分。
     func decodeStringOrArray(_ key: CodingKeys) -> [String] {
       if let arr = try? container.decodeIfPresent([String].self, forKey: key) { return arr ?? [] }
       if let single = try? container.decodeIfPresent(String.self, forKey: key) { return (single ?? "").split(separator: ",").map { $0.trimmingCharacters(in: .whitespaces) } }
@@ -49,10 +53,10 @@ public struct GenerationCategory: Codable, Equatable, Identifiable {
 }
 
 public extension GenerationCategory {
+  /// 從 `Data` 解碼成 `[GenerationCategory]`
   static func decodeList(from data: Data) throws -> [GenerationCategory] {
     let decoder = JSONDecoder()
     decoder.keyDecodingStrategy = .useDefaultKeys
     return try decoder.decode([GenerationCategory].self, from: data)
   }
 }
-

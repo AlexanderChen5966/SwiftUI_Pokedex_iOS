@@ -10,11 +10,15 @@ public struct APIClientLive: APIClient {
     self.generationsURL = generationsURL
   }
 
+  /// 取得寶可夢清單。
+  /// - 若指定遠端 URL 則以網路請求，否則讀取 Bundle 內建的 `pokemon_data.json`。
   public func fetchPokemon() async throws -> [Pokemon] {
     if let pokemonURL { return try await fetchRemote([Pokemon].self, from: pokemonURL) }
     return try fetchLocalJSON([Pokemon].self, resource: "pokemon_data")
   }
 
+  /// 取得世代/地區清單。
+  /// - 若指定遠端 URL 則以網路請求，否則讀取 Bundle 內建的 `pokemon_generations.json`。
   public func fetchGenerations() async throws -> [GenerationCategory] {
     if let generationsURL { return try await fetchRemote([GenerationCategory].self, from: generationsURL) }
     return try fetchLocalJSON([GenerationCategory].self, resource: "pokemon_generations")
@@ -22,6 +26,7 @@ public struct APIClientLive: APIClient {
 
   // MARK: - Helpers
 
+  /// 以 Alamofire 從遠端取得並解碼資料。
   private func fetchRemote<T: Decodable>(_ type: T.Type, from url: URL) async throws -> T {
     let decoder = JSONDecoder()
     decoder.keyDecodingStrategy = .useDefaultKeys
@@ -40,6 +45,7 @@ public struct APIClientLive: APIClient {
     }
   }
 
+  /// 從 Bundle 內建 JSON 讀取並解碼資料。
   private func fetchLocalJSON<T: Decodable>(_ type: T.Type, resource: String) throws -> T {
     let decoder = JSONDecoder()
     decoder.keyDecodingStrategy = .useDefaultKeys
@@ -50,4 +56,3 @@ public struct APIClientLive: APIClient {
     return try decoder.decode(T.self, from: data)
   }
 }
-

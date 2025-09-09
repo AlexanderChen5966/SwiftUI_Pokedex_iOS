@@ -2,6 +2,9 @@ import SwiftUI
 import ComposableArchitecture
 import SDWebImageSwiftUI
 
+/// Pokedex 清單頁面 UI。
+/// - 使用 `PokedexListFeature` 的狀態驅動：搜尋、篩選、圖像樣式與閃光切換。
+
 public struct PokedexListView: View {
   let store: StoreOf<PokedexListFeature>
 
@@ -12,6 +15,7 @@ public struct PokedexListView: View {
   public var body: some View {
     WithViewStore(self.store, observe: { $0 }) { viewStore in
       ScrollView {
+        // 兩欄瀑布流清單
         LazyVGrid(columns: [
           GridItem(.flexible(minimum: 120, maximum: 200), spacing: 12),
           GridItem(.flexible(minimum: 120, maximum: 200), spacing: 12)
@@ -45,14 +49,14 @@ public struct PokedexListView: View {
       .toolbar {
         ToolbarItem(placement: .navigationBarTrailing) {
           Menu {
-            // Image style & shiny
+            // 圖像樣式與閃光
             Picker("Image Style", selection: viewStore.binding(get: \.imageStyle, send: PokedexListFeature.Action.setImageStyle)) {
               Text("Official").tag(PokedexListFeature.ImageStyle.official)
               Text("Sprite").tag(PokedexListFeature.ImageStyle.sprite)
             }
             Toggle("Shiny", isOn: viewStore.binding(get: \.isShiny, send: PokedexListFeature.Action.toggleShiny))
 
-            // Filters: Forms
+            // 篩選：形態
             Menu("Forms") {
               Toggle(
                 "Mega",
@@ -77,7 +81,7 @@ public struct PokedexListView: View {
               )
             }
 
-            // Filters: Capture
+            // 篩選：收服狀態（以勾勾呈現當前選擇）
             Menu("Capture") {
               Button(action: { viewStore.send(.setCaptureFilter(.all)) }) {
                 HStack {
@@ -99,7 +103,7 @@ public struct PokedexListView: View {
               }
             }
 
-            // Filters: Generation / Region
+            // 篩選：世代/地區（由載入的 `generations` 生成選單）
             Menu("Generation/Region") {
               Button(action: { viewStore.send(.setSelectedGeneration(nil)) }) {
                 HStack {
@@ -176,6 +180,7 @@ public struct PokemonCardView: View {
     )
   }
 
+  /// 依當前圖像樣式與是否閃光，回傳顯示用圖片 URL。
   private func imageURL() -> URL? {
     switch imageStyle {
     case .official:
