@@ -38,6 +38,11 @@ struct AppView: View {
           }
           .buttonStyle(.bordered)
 
+          // Pokedex list
+          PokedexListView(
+            store: self.store.scope(state: \.list, action: AppFeature.Action.list)
+          )
+
           Spacer()
         }
         .padding()
@@ -46,4 +51,3 @@ struct AppView: View {
     }
   }
 }
-
