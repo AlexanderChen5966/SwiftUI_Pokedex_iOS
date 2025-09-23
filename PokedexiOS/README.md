@@ -44,4 +44,4 @@
 - 若需顯示更多圖片或調整範圍，請修改 `PokedexListFeature.State.ids`。
 
 ## 授權
-個人/學習用途。
+學習用途。
